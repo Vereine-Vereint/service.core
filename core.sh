@@ -10,7 +10,7 @@ declare -A commands=(
 cmd_help() {
   print_help "" "commands"
 }
-source $CORE_DIR/cmd_docker.sh
+source $CORE_DIR/docker.sh
 
 # FUNCTIONS
 source $CORE_DIR/func_env.sh
