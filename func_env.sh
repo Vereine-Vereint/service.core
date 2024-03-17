@@ -1,7 +1,5 @@
 # loads the .env file in the main directory
 
-
-
 commands+=([set-env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
 cmd_set-env() {
   # save to core/selected.env
@@ -16,26 +14,26 @@ load_env() {
   fi
 
   if [ -f "core/selected.env" ]; then
-    ENV=$(cat core/selected.env | sed 's/ENV=//g')
+    ENV_FILE=$(cat core/selected.env | sed 's/ENV=//g')
   else
-    ENV=".env"
+    ENV_FILE=".env"
   fi
-  echo "[ENVIRONMENT] $ENV"
+  echo "[ENVIRONMENT] $ENV_FILE"
   echo
 
   # check if .env file exists
-  if [ ! -f "../$ENV" ]; then
-    echo "$ENV not found"
-    echo "Created empty $ENV file"
-    sed -E 's/=(.*)$/= #\1/' .env.example > "../$ENV"
+  if [ ! -f "../$ENV_FILE" ]; then
+    echo "$ENV_FILE not found"
+    echo "Created empty $ENV_FILE file"
+    sed -E 's/=(.*)$/= #\1/' .env.example > "../$ENV_FILE"
     echo 
-    echo "Please fill the $ENV file"
+    echo "Please fill the $ENV_FILE file"
     exit 1
   fi
 
   # import .env file
   set -o allexport
-  source ../$ENV
+  source ../$ENV_FILE
   set +o allexport
 
   # check if all variables are set
@@ -51,7 +49,7 @@ load_env() {
 
   if [ $all_vars_set -eq 0 ]; then
     echo
-    echo "Please fill the $ENV file"
+    echo "Please fill the $ENV_FILE file"
     exit 1
   fi
 
