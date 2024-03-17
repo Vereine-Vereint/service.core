@@ -4,9 +4,11 @@ declare -A docker_commands=(
   [status]=":Show status of $SERVICE_NAME"
   [restart]=":Restart existing containers for $SERVICE_NAME"
   [down]=":Stop and remove $SERVICE_NAME"
-  [up]=":Apply Docker Compose and start $SERVICE_NAME" 
+  [up]=":Apply Docker Compose and start $SERVICE_NAME"
   [stop]=":Stop existing containers for $SERVICE_NAME"
-  [start]=":Start existing containers for $SERVICE_NAME"  
+  [start]=":Start existing containers for $SERVICE_NAME"
+  [pull]=":Pull images for $SERVICE_NAME"
+  [build]=":Build images for $SERVICE_NAME"
 )
 
 # DOCKER SUB COMMAND
@@ -39,33 +41,31 @@ docker_status() {
 
 docker_restart() {
   exec_attachment configure
-  exec_attachment preRestart
   docker compose -p $SERVICE_NAME restart
-  exec_attachment postRestart
 }
 
 docker_down() {
-  exec_attachment preStop
   docker compose -p $SERVICE_NAME down
-  exec_attachment postStop
 }
 
 docker_up() {
   exec_attachment configure
-  exec_attachment preStart
   docker compose -p $SERVICE_NAME up -d
-  exec_attachment postStart
 }
 
 docker_start() {
   exec_attachment configure
-  exec_attachment preStart
   docker compose -p $SERVICE_NAME start
-  exec_attachment postStart
 }
 
 docker_stop() {
-  exec_attachment preStop
   docker compose -p $SERVICE_NAME stop
-  exec_attachment postStop
+}
+
+docker_pull() {
+  docker compose -p $SERVICE_NAME pull
+}
+
+docker_build() {
+  docker compose -p $SERVICE_NAME build
 }
