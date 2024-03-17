@@ -13,11 +13,13 @@ load_env() {
     return
   fi
 
+  set -o allexport
   if [ -f "core/selected.env" ]; then
     ENV_FILE=$(cat core/selected.env | sed 's/ENV=//g')
   else
     ENV_FILE=".env"
   fi
+  set +o allexport
   echo "[ENVIRONMENT] $ENV_FILE"
   echo
 
