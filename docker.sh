@@ -17,6 +17,17 @@ commands+=([docker]=":Manage Docker operations")
 cmd_docker() {
   local command="$1"
 
+  # check if ":" is in the command
+  if [[ $command == *":"* ]]; then
+    # split the string by ":"
+    IFS=":" read -ra command_parts <<<"$command"
+
+    for command_part in "${command_parts[@]}"; do
+      cmd_docker $command_part
+    done
+    return 0
+  fi
+
   if [[ ! " ${!docker_commands[@]} " =~ " $command " ]]; then
     print_help "docker " "docker_commands"
     if ! [[ -z "$command" ]]; then
