@@ -3,6 +3,7 @@
 declare -A git_commands=(
   [branch]="[--all]:Show the current branch (including submodules). If --all is set, it will show all branches (including submodules)"
   [commit]="[--push] [--force-branch] <commit message>:Commit changes of all submodules and if --push is set, push to the remote repositories. This requires all submodules to be on the main branch. If --force-branch is set, it will allow to commit (and push) the submodules even if they are not on the main branch"
+  [pull]=":Pull changes of all submodules from their remote repositories on their main branch"
 )
 
 commands+=([git]=":Manage git operations")
@@ -88,4 +89,8 @@ git_commit() {
     echo "Pushing changes to the parent repository"
     git push | sed 's/^/  /'
   fi
+}
+
+git_pull() {
+  git submodule foreach --recursive "git checkout main && git pull"
 }
