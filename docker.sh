@@ -61,6 +61,7 @@ docker_down() {
 }
 
 docker_up() {
+  exec_attachment setup
   exec_attachment configure
   docker compose -p $SERVICE_NAME up -d "$@"
 }
