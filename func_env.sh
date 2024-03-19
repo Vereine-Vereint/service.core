@@ -1,11 +1,9 @@
 # loads the .env file in the main directory
 
-
-
-commands+=([set-env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
+commands+=([set - env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
 cmd_set-env() {
   # save to core/selected.env
-  echo "ENV=$1.env" > core/selected.env
+  echo "ENV=$1.env" >core/selected.env
 
   load_env
 }
@@ -26,9 +24,23 @@ load_env() {
   # check if .env file exists
   if [ ! -f "../$ENV" ]; then
     echo "$ENV not found"
-    echo "Created empty $ENV file"
-    sed -E 's/=(.*)$/= #\1/' .env.example > "../$ENV"
-    echo 
+
+    # ask if new .env file should be created
+    read -p "[ENVIRONMENT] Do you want to create a new $ENV file? (y/N) " create_env
+
+    # if yes, create empty .env file else exit
+    case "$create_env" in
+    [yY][eE][sS] | [yY])
+      echo "Created empty $ENV file"
+      ;;
+    *)
+      echo "exiting"
+      exit 1
+      ;;
+    esac
+
+    sed -E 's/=(.*)$/= #\1/' .env.example >"../$ENV"
+    echo
     echo "Please fill the $ENV file"
     exit 1
   fi
