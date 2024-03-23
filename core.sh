@@ -1,4 +1,4 @@
-CORE_VERSION="v1.0"
+CORE_VERSION="v1.1"
 
 CORE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "[CORE] $CORE_VERSION ($(cd $CORE_DIR && git rev-parse --short HEAD))"
