@@ -20,3 +20,16 @@ generate() {
     exit 1
   fi
 }
+
+# executes generate for all files
+# in the templates directory recursively
+generate_all() {
+    # find all files (-type f) in the templates directory
+    # and strip the SERVICE_DIR/templates/ part
+    local files=$(find $SERVICE_DIR/templates -type f | sed "s|$SERVICE_DIR/templates/||")
+
+    # iterate over all files and generate them
+    for fl in $files; do
+        generate $fl
+    done
+}
