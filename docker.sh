@@ -4,15 +4,29 @@ declare -A docker_commands=(
   [status]=":Show status of $SERVICE_NAME"
   [restart]=":Restart existing containers for $SERVICE_NAME"
   [down]=":Stop and remove $SERVICE_NAME"
-  [up]=":Apply Docker Compose and start $SERVICE_NAME" 
+  [up]=":Apply Docker Compose and start $SERVICE_NAME"
   [stop]=":Stop existing containers for $SERVICE_NAME"
-  [start]=":Start existing containers for $SERVICE_NAME"  
+  [start]=":Start existing containers for $SERVICE_NAME"
+  [pull]=":Pull images for $SERVICE_NAME"
+  [build]=":Build images for $SERVICE_NAME"
+  [delete-volumes]=":Delete volumes for $SERVICE_NAME"
 )
 
 # DOCKER SUB COMMAND
 commands+=([docker]=":Manage Docker operations")
 cmd_docker() {
   local command="$1"
+
+  # check if ":" is in the command
+  if [[ $command == *":"* ]]; then
+    # split the string by ":"
+    IFS=":" read -ra command_parts <<<"$command"
+
+    for command_part in "${command_parts[@]}"; do
+      cmd_docker $command_part
+    done
+    return 0
+  fi
 
   if [[ ! " ${!docker_commands[@]} " =~ " $command " ]]; then
     print_help "docker " "docker_commands"
@@ -30,42 +44,45 @@ cmd_docker() {
 
 # FUNCTIONS
 docker_logs() {
-  docker compose -p $SERVICE_NAME logs -f
+  docker compose -p $SERVICE_NAME logs -f "$@"
 }
 
 docker_status() {
-  docker compose -p $SERVICE_NAME ps
+  docker compose -p $SERVICE_NAME ps "$@"
 }
 
 docker_restart() {
   exec_attachment configure
-  exec_attachment preRestart
-  docker compose -p $SERVICE_NAME restart
-  exec_attachment postRestart
+  docker compose -p $SERVICE_NAME restart "$@"
 }
 
 docker_down() {
-  exec_attachment preStop
-  docker compose -p $SERVICE_NAME down
-  exec_attachment postStop
+  docker compose -p $SERVICE_NAME down "$@"
 }
 
 docker_up() {
+  exec_attachment setup
   exec_attachment configure
-  exec_attachment preStart
-  docker compose -p $SERVICE_NAME up -d
-  exec_attachment postStart
+  docker compose -p $SERVICE_NAME up -d "$@"
 }
 
 docker_start() {
   exec_attachment configure
-  exec_attachment preStart
-  docker compose -p $SERVICE_NAME start
-  exec_attachment postStart
+  docker compose -p $SERVICE_NAME start "$@"
 }
 
 docker_stop() {
-  exec_attachment preStop
-  docker compose -p $SERVICE_NAME stop
-  exec_attachment postStop
+  docker compose -p $SERVICE_NAME stop "$@"
+}
+
+docker_pull() {
+  docker compose -p $SERVICE_NAME pull "$@"
+}
+
+docker_build() {
+  docker compose -p $SERVICE_NAME build "$@"
+}
+
+docker_delete-volumes() {
+  sudo rm -rf $SERVICE_DIR/volumes
 }
