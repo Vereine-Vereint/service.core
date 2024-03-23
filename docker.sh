@@ -53,6 +53,7 @@ docker_status() {
 
 docker_restart() {
   exec_attachment configure
+  generate_all
   docker compose -p $SERVICE_NAME restart "$@"
 }
 
@@ -63,11 +64,13 @@ docker_down() {
 docker_up() {
   exec_attachment setup
   exec_attachment configure
+  generate_all
   docker compose -p $SERVICE_NAME up -d "$@"
 }
 
 docker_start() {
   exec_attachment configure
+  generate_all
   docker compose -p $SERVICE_NAME start "$@"
 }
 
