@@ -17,23 +17,23 @@ load_env() {
   if [ -f "core/selected.env" ]; then
     ENV_FILE=$(cat core/selected.env | sed 's/ENV=//g')
   else
-    ENV_FILE=".env"
+    ENV_FILE="$SERVICE_NAME.env"
   fi
   set +o allexport
   echo "[ENVIRONMENT] $ENV_FILE"
   echo
 
   # check if .env file exists
-  if [ ! -f "../$ENV" ]; then
-    echo "$ENV not found"
+  if [ ! -f "$SERVICES_DIR/$ENV_FILE" ]; then
+    echo "$ENV_FILE not found"
 
     # ask if new .env file should be created
-    read -p "[ENVIRONMENT] Do you want to create a new $ENV file? (y/N) " create_env
+    read -p "[ENVIRONMENT] Do you want to create a new $ENV_FILE file? (y/N) " create_env
 
     # if yes, create empty .env file else exit
     case "$create_env" in
     [yY][eE][sS] | [yY])
-      echo "Created empty $ENV file"
+      echo "Created empty $ENV_FILE file"
       ;;
     *)
       echo "exiting"
@@ -41,15 +41,15 @@ load_env() {
       ;;
     esac
 
-    sed -E 's/=(.*)$/= #\1/' .env.example >"../$ENV"
+    sed -E 's/=(.*)$/= #\1/' .env.example >"$SERVICES_DIR/$ENV_FILE"
     echo
-    echo "Please fill the $ENV file"
+    echo "Please fill the $ENV_FILE file"
     exit 1
   fi
 
   # import .env file
   set -o allexport
-  source ../$ENV_FILE
+  source $SERVICES_DIR/$ENV_FILE
   set +o allexport
 
   # check if all variables are set
