@@ -1,9 +1,11 @@
-CORE_VERSION="v1.2"
+set -o allexport
+CORE_VERSION="v1.3"
 
 CORE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "[CORE] $CORE_VERSION ($(cd $CORE_DIR && git rev-parse --short HEAD))"
 
 SERVICES_DIR=$(dirname $SERVICE_DIR)
+set +o allexport
 
 # COMMANDS
 declare -A commands=(
