@@ -58,7 +58,7 @@ docker_restart() {
 }
 
 docker_down() {
-  docker compose -p $SERVICE_NAME down "$@"
+  docker compose -p $SERVICE_NAME down --remove-orphans "$@"
 }
 
 docker_up() {
