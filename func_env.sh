@@ -2,8 +2,15 @@
 
 commands+=([set-env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
 cmd_set-env() {
+  local var=$1
+  if [ ${#1} -gt 4 ]; then
+    last_four="${1: -4}"
+    if [ "$last_four" != ".env" ]; then
+      var="$1.env"
+    fi
+  fi
   # save to core/selected.env
-  echo "ENV=$1.env" >core/selected.env
+  echo "ENV=$var" >core/selected.env
 
   load_env
 }
