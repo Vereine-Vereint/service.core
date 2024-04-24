@@ -14,6 +14,24 @@ declare -A commands=(
 cmd_help() {
   print_help "" "commands"
 }
+
+# GLOBAL SUB-COMMANDS
+declare -A global_subcommands=(
+)
+
+add_global_subcommand() {
+  local service="$1"
+  local command="$2"
+
+  if [[ " ${!global_subcommands[@]} " =~ " $command " ]]; then
+    echo "[CORE] Unable to register global subcommand: following exist:"
+    echo "       $command for service ${global_subcommands[$command]}"
+    echo "       $command for service $service"
+    exit 1
+  fi
+  global_subcommands[$command]="$service"
+}
+
 source $CORE_DIR/docker.sh
 source $CORE_DIR/cmd_git.sh
 
@@ -27,7 +45,29 @@ source $CORE_DIR/func_generate.sh
 main() {
   local command="$1"
 
+  load_env "$1"
+
+  # check if ":" is in the command
+  if [[ $command == *":"* ]]; then
+    # split the string by ":"
+    IFS=":" read -ra command_parts <<<"$command"
+
+    for command_part in "${command_parts[@]}"; do
+      main $command_part
+    done
+    return 0
+  fi
+
   if [[ ! " ${!commands[@]} " =~ " $command " ]]; then
+
+    # check if command is a global sub-command
+    if [[ " ${!global_subcommands[@]} " =~ " $command " ]]; then
+      local service="${global_subcommands[$command]}"
+      shift
+      cmd_$service $command "$@"
+      return 0
+    fi
+
     cmd_help
     if ! [[ -z "$command" ]]; then
       echo
@@ -35,8 +75,6 @@ main() {
     fi
     exit 1
   fi
-
-  load_env "$1"
 
   shift
   cmd_$command "$@"

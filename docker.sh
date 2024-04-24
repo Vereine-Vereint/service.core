@@ -9,8 +9,20 @@ declare -A docker_commands=(
   [start]=":Start existing containers for $SERVICE_NAME"
   [pull]=":Pull images for $SERVICE_NAME"
   [build]=":Build images for $SERVICE_NAME"
-  [delete-volumes]=":Delete volumes for $SERVICE_NAME"
+  ["delete-volumes"]=":Delete volumes for $SERVICE_NAME"
 )
+
+# DOCKER GLOBAL SUB-COMMANDS
+add_global_subcommand "docker" "down"
+add_global_subcommand "docker" "up"
+add_global_subcommand "docker" "delete-volumes"
+add_global_subcommand "docker" "stop"
+add_global_subcommand "docker" "start"
+add_global_subcommand "docker" "pull"
+add_global_subcommand "docker" "build"
+add_global_subcommand "docker" "restart"
+add_global_subcommand "docker" "logs"
+add_global_subcommand "docker" "status"
 
 # DOCKER SUB COMMAND
 commands+=([docker]=":Manage Docker operations")
@@ -87,5 +99,6 @@ docker_build() {
 }
 
 docker_delete-volumes() {
+
   sudo rm -rf $SERVICE_DIR/volumes
 }
