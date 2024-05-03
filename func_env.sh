@@ -1,6 +1,6 @@
 # loads the .env file in the main directory
 
-commands+=([set-env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
+commands+=([set - env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
 cmd_set-env() {
   # save to core/selected.env
   echo "ENV=$1.env" >core/selected.env
@@ -42,9 +42,8 @@ load_env() {
     esac
 
     sed -E 's/=(.*)$/= #\1/' .env.example >"$SERVICES_DIR/$ENV_FILE"
-    echo
-    echo "Please fill the $ENV_FILE file"
-    exit 1
+    
+    exec_in_place "$SERVICES_DIR/$ENV_FILE"
   fi
 
   # import .env file
@@ -68,5 +67,48 @@ load_env() {
     echo "Please fill the $ENV_FILE file"
     exit 1
   fi
+
+}
+
+# Function to execute commands in place
+# Cuts all commands from a file and replaces them with the output of the command
+# There are some limitations to this function:
+# - The command must be enclosed in "#$(" and ")"
+# - The command must not contain any special characters like /
+# - The command must not contain any null bytes, they will be ignored and an error will be shown
+# - The command must not contain any newlines, they will be replaced with spaces
+exec_in_place() {
+  local file="$1"
+
+  # Save the current IFS value and set it to newline
+  oldIFS=$IFS
+  IFS=$'\n'
+
+  # Find all instances of $(command) in the file
+  commands=($(cat "$file" | grep -oP '\#\$\(\K[^)]+(?=\))' | awk '{print}' | tr '\0' '\n'))
+
+  # Restore the IFS value
+  IFS=$oldIFS
+
+  # Iterate over the commands
+  for cmd in "${commands[@]}"; do
+    # Execute the command and capture the output
+    result="$(eval "$cmd" 2>&1 | tr '\n' ' ' | sed 's/ *$//')"
+
+    # the script still shows erros due to null bytes in the cmd
+    # however it ignores the null bytes in the result and works fine
+
+    # Escape special characters in the command to avoid issues with sed
+    escaped_cmd=$(printf '%s\n' "$cmd" | sed -e 's/[\/&]/\\&/g')
+
+    # Escape special characters in the result to avoid issues with sed
+    escaped_result=$(printf '%s\n' "$result" | sed -e 's/[\/&]/\\&/g')
+
+    # Print the sed command for testing purposes
+    # echo sed -i "s/\$($escaped_cmd)/$escaped_result/g" "$file"
+
+    # Replace the command with its output in the file
+    sed -i "s/\#\$($escaped_cmd)/$escaped_result/g" "$file"
+  done
 
 }
