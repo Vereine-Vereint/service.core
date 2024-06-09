@@ -70,3 +70,9 @@ load_env() {
   fi
 
 }
+
+reload_env() {
+  set -o allexport
+  source $SERVICES_DIR/$ENV_FILE
+  set +o allexport
+}
