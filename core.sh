@@ -1,5 +1,5 @@
 set -o allexport
-CORE_VERSION="v1.3"
+CORE_VERSION="v2.0"
 
 CORE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "[CORE] $CORE_VERSION ($(cd $CORE_DIR && git rev-parse --short HEAD))"
@@ -32,6 +32,7 @@ add_global_subcommand() {
   global_subcommands[$command]="$service"
 }
 
+source $CORE_DIR/borg.sh
 source $CORE_DIR/docker.sh
 source $CORE_DIR/cmd_git.sh
 
