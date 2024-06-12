@@ -44,6 +44,10 @@ load_env() {
     sed -E 's/=(.*)$/= #\1/' .env.example >"$SERVICES_DIR/$ENV_FILE"
     
     exec_in_place "$SERVICES_DIR/$ENV_FILE"
+
+    echo
+    echo "Please fill the $ENV_FILE file"
+    exit 1
   fi
 
   # import .env file
