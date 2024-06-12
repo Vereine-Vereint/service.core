@@ -1,6 +1,6 @@
 # loads the .env file in the main directory
 
-commands+=([set - env]="<env_name>:Sets the name of the .env file to be loaded and checks it")
+commands+=(["set-env"]="<env_name>:Sets the name of the .env file to be loaded and checks it")
 cmd_set-env() {
   # save to core/selected.env
   echo "ENV=$1.env" >core/selected.env
