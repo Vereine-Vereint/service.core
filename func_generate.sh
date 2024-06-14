@@ -11,13 +11,13 @@ generate() {
   local template="$1"
   local generated="$2"
 
-  if [[ -f $template ]]; then
+  if [[ ! -f $template ]]; then
     echo "Template file not found"
     exit 1
   fi
 
   if [[ -z $generated ]]; then
-    echo "Generated file not provided"
+    echo "Generated path not provided"
     exit 1
   fi
 
