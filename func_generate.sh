@@ -21,7 +21,7 @@ generate() {
     exit 1
   fi
 
-  echo "Generating $filename"
+  echo "Generating $generated"
   local path=$(dirname $generated)
   mkdir -p $path
   envsubst <$template >$generated
