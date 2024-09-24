@@ -16,8 +16,8 @@ declare -A borg_commands=(
   ["break-lock"]=":Break the repository lock !USE WITH CAUTION!"
   
   ["autobackup-now"]="<logfile>:Automatically backup and prune now"
-  ["autobackup-enable"]=":Enable automatic hourly backups"
-  ["autobackup-disable"]=":Disable automatic hourly backups"
+  ["autobackup-enable"]="<time>:Enable automatic backups (default time: '0 3 * * *')"
+  ["autobackup-disable"]=":Disable automatic backups"
 )
 
 add_global_subcommand "borg" "restore"
