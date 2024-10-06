@@ -1,5 +1,5 @@
 set -o allexport
-CORE_VERSION="v2.3"
+CORE_VERSION="v2.4"
 
 CORE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "[CORE] $CORE_VERSION ($(cd $CORE_DIR && git rev-parse --short HEAD))"

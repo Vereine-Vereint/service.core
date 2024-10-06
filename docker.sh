@@ -78,12 +78,17 @@ docker_up() {
   exec_attachment configure
   
   docker compose -p $SERVICE_NAME up -d "$@"
+
+  exec_attachment post-setup
+  exec_attachment post-configure
 }
 
 docker_start() {
   exec_attachment configure
   
   docker compose -p $SERVICE_NAME start "$@"
+
+  exec_attachment post-configure
 }
 
 docker_stop() {
