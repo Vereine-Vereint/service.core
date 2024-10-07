@@ -96,14 +96,17 @@ docker_stop() {
 }
 
 docker_pull() {
+  exec_attachment setup
+  exec_attachment pull
   docker compose -p $SERVICE_NAME pull "$@"
 }
 
 docker_build() {
+  exec_attachment setup
   docker compose -p $SERVICE_NAME build "$@"
 }
 
 docker_delete-volumes() {
-
+  echo "Deleting volumes..."
   sudo rm -rf $SERVICE_DIR/volumes
 }
