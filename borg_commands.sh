@@ -100,7 +100,7 @@ borg_init() {
 
 borg_info() {
   echo "[BORG] Service information:"
-  if crontab -l | grep -q "$SERVICE_NAME/service.sh"; then
+  if crontab -l | grep -q "$SERVICE_NAME/service.sh borg"; then
     echo "[BORG] Automatic backups are enabled."
   else
     echo "[BORG] Automatic backups are disabled."
@@ -203,7 +203,7 @@ borg_autobackup-enable() {
     fi
   fi
 
-  if crontab -l | grep -q "$SERVICE_NAME/service.sh"; then
+  if crontab -l | grep -q "$SERVICE_NAME/service.sh borg"; then
     echo "[BORG] Updating automatic backups for this service..."
     borg_autobackup-disable true
   else
@@ -211,15 +211,15 @@ borg_autobackup-enable() {
   fi
   (crontab -l; echo "$time $SERVICE_DIR/service.sh borg autobackup-now $CORE_DIR/autobackup.log") | crontab -
   echo "[CRON] Added the following cronjob:"  
-  echo "$(crontab -l | grep "$SERVICE_NAME/service.sh")"
+  echo "$(crontab -l | grep "$SERVICE_NAME/service.sh borg")"
 }
 
 borg_autobackup-disable() {
   if [ -z "$1" ] || [ "$1" == false ]; then
     echo "[BORG] Disabling automatic backups for this service..."
   fi
-  cronjob=$(crontab -l | grep "$SERVICE_NAME/service.sh")
-  crontab -l | grep -v "$SERVICE_NAME/service.sh" | crontab -
+  cronjob=$(crontab -l | grep "$SERVICE_NAME/service.sh borg")
+  crontab -l | grep -v "$SERVICE_NAME/service.sh borg" | crontab -
   echo "[CRON] Removed the following cronjob:"
   echo "$cronjob"
 }
