@@ -58,24 +58,24 @@ cmd_docker() {
 
 # FUNCTIONS
 docker_logs() {
-  docker compose -p $SERVICE_NAME logs -f "$@"
+  docker compose -p $SERVICE_FOLDER_NAME logs -f "$@"
 }
 
 docker_status() {
-  docker compose -p $SERVICE_NAME ps "$@"
+  docker compose -p $SERVICE_FOLDER_NAME ps "$@"
 }
 
 docker_restart() {
   exec_attachment configure
 
-  docker compose -p $SERVICE_NAME restart "$@"
+  docker compose -p $SERVICE_FOLDER_NAME restart "$@"
 
 }
 
 docker_down() {
   exec_attachment pre-stop
 
-  docker compose -p $SERVICE_NAME down --remove-orphans "$@"
+  docker compose -p $SERVICE_FOLDER_NAME down --remove-orphans "$@"
 
   exec_attachment post-stop
 }
@@ -85,7 +85,7 @@ docker_up() {
   exec_attachment configure
   exec_attachment pre-start
   
-  docker compose -p $SERVICE_NAME up -d "$@"
+  docker compose -p $SERVICE_FOLDER_NAME up -d "$@"
 
   exec_attachment post-setup
   exec_attachment post-configure
@@ -96,7 +96,7 @@ docker_start() {
   exec_attachment configure
   exec_attachment pre-start
   
-  docker compose -p $SERVICE_NAME start "$@"
+  docker compose -p $SERVICE_FOLDER_NAME start "$@"
 
   exec_attachment post-configure
   exec_attachment post-start
@@ -105,7 +105,7 @@ docker_start() {
 docker_stop() {
   exec_attachment pre-stop
 
-  docker compose -p $SERVICE_NAME stop "$@"
+  docker compose -p $SERVICE_FOLDER_NAME stop "$@"
   
   exec_attachment post-stop
 }
@@ -113,16 +113,16 @@ docker_stop() {
 docker_pull() {
   exec_attachment setup
   exec_attachment pull
-  docker compose -p $SERVICE_NAME pull "$@"
+  docker compose -p $SERVICE_FOLDER_NAME pull "$@"
 }
 
 docker_build() {
   exec_attachment setup
-  docker compose -p $SERVICE_NAME build "$@"
+  docker compose -p $SERVICE_FOLDER_NAME build "$@"
 }
 
 docker_exec() {
-  docker compose -p $SERVICE_NAME exec $@
+  docker compose -p $SERVICE_FOLDER_NAME exec $@
 }
 
 docker_delete-volumes() {

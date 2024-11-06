@@ -4,6 +4,7 @@ CORE_VERSION="v2.5"
 CORE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 echo "[CORE] $CORE_VERSION ($(cd $CORE_DIR && git rev-parse --short HEAD))"
 
+SERVICE_FOLDER_NAME=$(basename $SERVICE_DIR)
 SERVICES_DIR=$(dirname $SERVICE_DIR)
 set +o allexport
 
