@@ -126,6 +126,8 @@ borg_backup() {
 borg_restore() {
   borg_check_name "$1" "latest"
 
+  echo "[BORG] Purging currrent data..."
+  docker_delete-volumes
   echo "[BORG] Restore data from backup..."
   BORG_RSH="$(echo $BORG_RSH | sed "s/~/\/home\/$USER/g")"
   sudo -E borg extract --progress "::$name"
