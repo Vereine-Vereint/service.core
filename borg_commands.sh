@@ -130,7 +130,29 @@ borg_restore() {
   docker_delete-volumes
   echo "[BORG] Restore data from backup..."
   BORG_RSH="$(echo $BORG_RSH | sed "s/~/\/home\/$USER/g")"
-  sudo -E borg extract --progress "::$name"
+
+  echo "[BORG] Mounting the backup..."
+  mkdir -p "$CORE_DIR/mnt"
+  sudo -E borg mount --progress "::$name" "$CORE_DIR/mnt"
+
+  set +e # disable exit on error
+
+  echo "[BORG] Restoring the backup..."
+  sudo rsync -avh --progress --delete "$CORE_DIR/mnt/volumes" "$SERVICE_DIR"
+  restoreExitCode=$?
+
+  echo "[BORG] Unmounting the backup..."
+  sudo -E borg umount "$CORE_DIR/mnt"
+  unmoutExitCode=$?
+
+  set -e # enable exit on error
+
+  if [ $restoreExitCode -ne 0 ] || [ $unmoutExitCode -ne 0 ]; then
+    echo "[BORG] Restore failed:"
+    echo "       rsync: $restoreExitCode"
+    echo "       umount: $unmoutExitCode"
+    exit 1
+  fi
   echo "[BORG] Restore finished"
 }
 
