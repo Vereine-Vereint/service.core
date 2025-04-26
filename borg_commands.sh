@@ -123,12 +123,20 @@ borg_backup() {
   echo "[BORG] Backup finished"
 }
 
-borg_restore() {
+borg_restore-fresh() {
   borg_check_name "$1" "latest"
 
   echo "[BORG] Purging currrent data..."
   docker_delete-volumes
   echo "[BORG] Restore data from backup..."
+  BORG_RSH="$(echo $BORG_RSH | sed "s/~/\/home\/$USER/g")"
+  sudo -E borg extract --progress "::$name"
+  echo "[BORG] Restore finished"
+}
+
+borg_restore-diff() {
+  borg_check_name "$1" "latest"
+
   BORG_RSH="$(echo $BORG_RSH | sed "s/~/\/home\/$USER/g")"
 
   echo "[BORG] Mounting the backup..."
@@ -137,7 +145,7 @@ borg_restore() {
 
   set +e # disable exit on error
 
-  echo "[BORG] Restoring the backup..."
+  echo "[BORG] Restoring the differences from backup..."
   sudo rsync -avh --progress --delete "$CORE_DIR/mnt/volumes" "$SERVICE_DIR"
   restoreExitCode=$?
 

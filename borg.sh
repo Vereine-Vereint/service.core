@@ -6,7 +6,8 @@ declare -A borg_commands=(
   [list]=":Lists all backups"
 
   [backup]="<name>:Backup current data"
-  [restore]="<name>:Restore data from backup"
+  [restore-fresh]="<name>:Delete and restore data from backup"
+  [restore-diff]="<name>:Restore data from backup (without deleting current data, using diff)"
   [export]="<file> <name>:Export backup to a .tar file"
   [delete]="<name>:Delete backup"
 
