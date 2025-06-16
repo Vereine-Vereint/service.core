@@ -120,6 +120,10 @@ borg_backup() {
 
   echo "[BORG] Backup current data..."
   sudo -E borg create --stats --progress --compression zlib "::$name" ./volumes
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Backup failed"
+    exit 1
+  fi
   echo "[BORG] Backup finished"
 }
 
@@ -131,6 +135,10 @@ borg_restore-fresh() {
   echo "[BORG] Restore data from backup..."
   BORG_RSH="$(echo $BORG_RSH | sed "s/~/\/home\/$USER/g")"
   sudo -E borg extract --progress "::$name"
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Restore failed"
+    exit 1
+  fi
   echo "[BORG] Restore finished"
 }
 
@@ -179,6 +187,10 @@ borg_export() {
 
   echo "[BORG] Export backup to a .tar file..."
   sudo -E borg export-tar --progress "::$name" $file
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Export failed"
+    exit 1
+  fi
   echo "[BORG] Export finished"
 }
 
@@ -187,18 +199,30 @@ borg_delete() {
 
   echo "[BORG] Delete backup..."
   sudo -E borg delete --progress "::$name"
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Delete failed"
+    exit 1
+  fi
   echo "[BORG] Backup deleted"
 }
 
 borg_compact() {
   echo "[BORG] Compact the repository..."
   sudo -E borg compact --progress
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Compact failed"
+    exit 1
+  fi
   echo "[BORG] Repository compacted"
 }
 
 borg_prune() {
   echo "[BORG] Prune old backups..."
   sudo -E borg prune --progress --stats --keep-within 2d --keep-daily=14 --keep-weekly=8 --keep-monthly=12 --keep-yearly=3
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Prune failed"
+    exit 1
+  fi
   echo "[BORG] Old backups pruned"
   # executing compact as well, as prune does not delete the data
   borg_compact
@@ -210,6 +234,10 @@ borg_break-lock() {
   echo "[BORG] ONLY USE THIS COMMAND IF YOU KNOW WHAT YOU ARE DOING"
   sleep 5
   sudo -E borg break-lock
+  if [ $? -ne 0 ]; then
+    echo "[BORG] Failed to break the lock"
+    exit 1
+  fi
   echo "[BORG] Repository lock freed"
 }
 
